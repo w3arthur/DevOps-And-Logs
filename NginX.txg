@@ -1,0 +1,74 @@
+
+# Server configurations
+#use refresh command after each setting
+# sudo service nginx restart 
+
+server {
+
+   root /var/www/mywebsite/_work/my-project/my-project/;
+
+   # Add index.html
+   index index.html index.htm index.nginx-debian.html;
+   server_name geo-trivia.com www.geo-trivia.com; #localhost   # managed by Certbot
+
+
+   location / {
+	# First attempt to serve request as file, then
+	# as directory, then fall back to displaying a 404.
+	#try_files $uri $uri/ =404;
+	proxy_pass http://localhost:3005;
+ 	proxy_http_version 1.1;
+	proxy_set_header Upgrade $http_upgrade;
+	proxy_set_header Connection 'upgrade';
+	proxy_set_header Host $host;
+	proxy_cache_bypass $http_upgrade;
+  }
+
+  location /socket.io/ {
+	proxy_http_version 1.1;
+	proxy_set_header Updgrade $http_upgrade;
+	proxy_set_header Connnection "upgrade";
+	root /var/www//var/www/mywebsite/_work/my-project/my-project/server;
+	proxy_pass http://localhost:3444;
+  }
+
+  location /api/ {
+	root /var/www//var/www/mywebsite/_work/my-project/my-project/server;
+	proxy_pass http://localhost:3444;
+  }
+
+  location /menoraflix/ {
+	root /var/www/menoraflix;
+	proxy_pass http://localhost:3500;
+
+  }
+
+  listen 80;
+  listen [::]:443 ssl ; # managed by Certbot
+  listen 443 ssl; # managed by Certbot
+  ssl_certificate /etc/letsencrypt/live/geo-trivia.com/fullchain.pem; # managed by Certbot
+  ssl_certificate_key /etc/letsencrypt/live/geo-trivia.com/privkey.pem; # managed by Certbot
+  include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+
+	root /var/www/html;
+
+	# Add index.php to the list if you are using PHP
+	index index.html index.htm index.nginx-debian.html;
+
+	server_name timetakes.com www.timetakes.com;
+
+	location / {
+		# First attempt to serve request as file, then
+		# as directory, then fall back to displaying a 404.
+		try_files $uri $uri/ =404;
+	}
+}
