@@ -1,0 +1,7 @@
+cd /var/www/mywebsite/_work/my-project/my-project/client
+npm run build
+
+			export NODE_ENV=production
+			echo $NODE_ENV
+pm2 restart mywebsite
+exit

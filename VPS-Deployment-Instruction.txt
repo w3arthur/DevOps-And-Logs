@@ -1,0 +1,284 @@
+https://www.youtube.com/watch?v=6-RtA6FlbgQ
+פקודות ועוד סרטון
+https://gist.github.com/bradtraversy/cd90d1ed3c462fe3bddd11bf8953a896
+https://www.youtube.com/watch?v=oykl1Ih9pMg
+
+*
+*חסר SSL
+*לחזור על איך לעשות GITPULL
+*לחזור עוד פעם על יצירת חשבון ב DIGITAL OCEAN
+*
+
+
+בזמן הרישום והגדרת האתר ומפתחות ה SSH
+להשתמש ב puttygen
+לשמור מפתחות
+
+
+כניסה ל SSH
+מתוך התיקיה בה נוצרו המפתחות
+ssh root@000.000.000.000
+אפשר להשתמש גם ב putty
+
+רישום משתמש חדש
+adduser arthur
+	123
+usermod -aG sudo arthur
+sudo su arthur
+	sudo su - arthur
+whoami
+mkdir ~/.ssh
+chmod 700 ~/.ssh
+nano ~/.ssh/authorized_keys
+לכתוב בשורה 1 !
+ssh-rsa רווח
+	ולהדביק את שאר נתוני ה public key מהתיקיה
+	*geoTriviaKeyPub
+	CTRL X Y ENTER
+chmod 600 ~/.ssh/authorized_keys
+sudo service ssh restart
+סיסמה
+exit
+
+
+ביטול התחברות עם root ולא עם סיסמה, רק עם private key
+sudo nano /etc/ssh/sshd_config
+סיסמה
+ctrl W
+להגדיר
+search: PermitRootLogin		no
+search PasswordAuthentication 	no
+ctrl X ENTER
+sudo systemctl reload sshd
+חיבור כ root יציג שגיאה
+לכן לשנות data ל arthur
+
+
+התקנת nodejs על ubuntu
+sudo apt update
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - 
+	123
+sudo apt-get install -y nodejs
+sudo apt-get install git
+git --version
+node -v
+npm -v
+
+התקנת nginx
+sudo apt update
+sudo apt install nginx
+	y
+sudo ufw allow 'Nginx HTTP'		* לשים לב שזה לא המועדף!
+
+systemctl status nginx
+*לדאוג שלא תהיה כ root
+cd ~
+cd /var/www
+ls
+תופיע תיקיית html
+להכנס לip  או לשרת geo-trivia.com לפורט 80
+sudo mkdir mywebsite
+sudo chmod -R 777 /var/www/html		*
+sudo chmod -R 777 /var/www/		*
+	123
+sudo chmod -R 777 /var/www/mywebsite
+*כרגע יהיה לך אתר, אפשר גם להעתיק אליו קבצים פיזית דרך WinSCP
+
+
+הגדרת הדומיין
+להגדיר בשרת הדומיין נגיד dynadot NS 
+	Ns1.digitalocean.com
+	Ns2.digitalocean.com
+	Ns3.digitalocean.com
+התקנה	Digital Ocean > Networking > Domains
+Type A	@	Geo-trivia-hosting	*IP מהתפריט
+CName		www	@
+	אפשר גם TYPE ATYR 	WWW	Geo-trivia-hosting	*IP
+
+
+חיבור ל GITHUB
+	Settings > Actions > Runners
+		new self hosted runner
+			Linix x64
+			לעבוד לפי הוראות
+Download
+			להמצא בתיקיה הנוכחית אליה תתחבר
+			cd 
+			חשוב להוסיף sudo  לשורה !
+			לשחרר את הקבצים
+cd תיקיה
+sudo curl -o actions-runner-linux-x64-2.291.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.291.1/actions-runner-linux-x64-2.291.1.tar.gz
+	סיסמה
+sudo tar xzf ./actions-runner-linux-x64-2.291.1.tar.gz
+
+Configure
+חשוב שיהיו הרשאות לתיקיה sudo chmod -R 777 /var/www/geotrivia mywebsite	!!!!
+./config.sh --url https://github.com/w3arthur/my-project --token ASURQZYMURT3MGNFCB2RFRDCSEJFS
+
+sudo chmod -R 777 /var/www/geotrivia mywebsite !!!
+
+חשוב להריץ !!!!	sudo ./run.sh 		!!!
+sudo ./svc.sh install
+sudo ./svc.sh start	*נשאר לחוץ!
+
+*/ אם לא עובד:
+sudo ./svc.sh status
+sudo ./svc.sh uninstall
+
+
+
+Using your self-hosted runner
+רק אם יצרת YAML ב GITHUB
+	runs-on: self-hosted
+*יוסבר בהמשך
+
+רק בתוך הפעולה נעשה PULL !
+ב RUNNERS זה מופעל ./run.sh 
+מוגדר כ *Idle
+
+
+
+
+
+
+
+
+
+הגדרת NGINX
+לפני התקנת GIT
+cd /etc/nginx/sites-available
+ls
+מוגדרים כל הפורטים והדומיינים של הפרוייקט
+sudo chmod -R 777 ./default
+או sudo nano default	ctrl X => save
+לערוך ידנית במיקום
+הערות התקנה מצורפות ב NGINX_SETTING_FILE
+חשוב להגדיר	
+	root /var/www/mywebsite/_work/my-project/my-project/;
+	server_name geo-trivia.com 146.190.29.46;		*תגדיר דומיין אם יש וIP נכונים
+	        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                # try_files $uri $uri/ =404;
+                proxy_pass http://localhost:3005;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection 'upgrade';
+                proxy_set_header Host $host;
+                proxy_cache_bypass $http_upgrade;
+        }
+	*	לא לשכוח להגדיר את הפורט נכון במקום 3005
+
+אחרי שינויים חשוב לאתחל!!!!
+!!!!		sudo systemctl restart nginx			!!!!!
+sudo systemctl restart nginx
+*	בגרסאות אחרות קיימות פקודות אחרות לאתחול!
+כגון	sudo systemctl restart nginx
+
+
+פעולות מGIT HUB ACTIONS
+cd /etc/nginx/sites-available
+נבטל sudo עבור הפרוייקט עבור הפעולות הנחוצות ל nginx !
+ביטול ביקוש הסיסמה מGITHUB ACTIONS !
+sudo visudo -f /etc/sudoers.d/arthur
+	להדביק
+arthur ALL=(ALL) NOPASSWD: /usr/sbin/service nginx start,/usr/sbin/service nginx stop,/usr/sbin/service nginx restart
+	ctrl X ENETER
+sudo systemctl restart nginx
+
+ליצור בפרוייקט עצמו תיקיות
+	/.github/workflows/
+		וקובץ
+			node.js.yml		*ניתן לקרוא איך שאתה רוצה
+*התוכן מועתק ברובו מ GIT HUB ACTIONS תואם
+*מצורפץ דוגמה בתיקיה /.github/workflows/
+* לשנות פייפליין| של run
+*להתקין ps2 אם אתה משתמש בו!
+להתחיל run מהרצות בסיסיות
+        	npm i
+      cd client
+      npm i
+      npm run build
+ואז להוסיף
+        	pm2 stop all
+    	pm2 start all
+    	pm2 save
+    	sudo service nginx restart
+*שאר הדוגמאות לפרוייקט לדוגמה ויישום path בתוך התיקיה my-project
+	app.use(express.static(path.join(__dirname, 'client/build')));
+
+אחרי push
+התוכנה תעלה לענן
+לעקוב ב GIT HUB ACTIONS
+בתיקיה /var/www/mywebsite/_work/my-project/my-project/
+ימצא הפרוייקט!	צריך רק להריץ אותו עם PM2 !
+
+
+התקנת pm2
+sudo npm install pm2@latest -g
+	123
+pm2 status
+pm2 start index.js
+cd client
+ls
+קיימת תיקיה build
+cd ..
+
+( cd /var/www/mywebsite/_work/my-project/my-project/  )
+הרצה ראשונית
+pm2 start npm --name "mywebsite" -- run start
+ls
+pm2 save
+
+עוד פקודות
+pm2 stom mywebsite
+pm2 status
+pm2 logs	תצוגת לוגים
+pm2 flush	מחיקה
+
+
+***
+sudo service nginx restart
+pm2 start npm --name "menoraflix" -- run start
+
+
+
+
+FIRWALL לא חובה!
+sudo ufw enable
+sudo ufw allow ssh	* חשוב מאוד
+sudo ufw status	*לבדוק שמופיע פורט 22
+עוד פורטים
+sudo ufw allow http	80
+sudo ufw allow https	443
+sudo ufw allow 8080/tcp
+sudo ufw status
+sudo ufw disable	כיבוי FIREWALL
+*אפשרי	sudo service nginx restart
+
+
+
+SSL			עם LetsEncrypt
+
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get install -y python-certbot-nginx-doc
+sudo apt-get install -y python-certbot-nginx
+sudo snap install --classic certbot
+	sudo certbot --nginx -d geo-trivia.com -d www.geo-trivia.com
+	@email
+	y
+	y
+ביטול 90 יום
+//certbot renew --dry-run
+sudo certbot renew --dry-run --nginx
+	לחזור	https://community.letsencrypt.org/t/certbot-auto-renew-issue/158046/2
+
+
+
+
+*הפורטים לא עובדים
+
+
+# Only valid for 90 days, test the renewal process with
+certbot renew --dry-run

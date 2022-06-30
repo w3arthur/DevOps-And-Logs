@@ -1,0 +1,27 @@
+להוסיף לסידור רענון
+npm cache clean --force
+או	npm rebuild
+https://www.digitalocean.com/community/questions/i-can-t-run-npm-run-build
+
+rm -rf node_modules
+
+תיקון ל build
+        npm audit fix
+        npm audit fix --force
+
+export NODE_ENV=production
+
+
+
+
+
+
+
+
+cd /var/www/mywebsite/_work/my-project/my-project/client
+npm run build
+
+			export NODE_ENV=production
+			echo $NODE_ENV
+pm2 restart mywebsite
+exit
