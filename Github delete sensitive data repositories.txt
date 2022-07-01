@@ -1,0 +1,6 @@
+git filter-branch --force --index-filter "git rm --cached --ignore-unmatch ./THE_FILE_NAME.TXT" --prune-empty --tag-name-filter cat -- --all
+git push --force --verbose --dry-run
+git push --force
+
+https://stackoverflow.com/questions/872565/remove-sensitive-files-and-their-commits-from-git-history
+https://www.youtube.com/watch?v=liCAFV8Rmbs&ab_channel=RyanOrsinger
