@@ -1,0 +1,12 @@
+cashback.co.il
+Access-Control-Allow-Origin
+Read Aloud
+ColorPick
+BlockerX
+
+AdBlock
+JSON Viewer
+React Developer Tools
+Redux DevTools
+Return YouTube Dislike
+ZED: Zoom Easy Downloader
