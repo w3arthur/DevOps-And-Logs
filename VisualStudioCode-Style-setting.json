@@ -73,5 +73,9 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-
+  "git.ignoreRebaseWarning": true,
+  "cmake.configureSettings": {
+    "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+  },
+  "cmake.configureOnOpen": true
 }
